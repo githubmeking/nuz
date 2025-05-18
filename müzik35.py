@@ -1,7 +1,7 @@
 import os
 import re
 import asyncio
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, errors
 from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 
 api_id = 20213849
@@ -138,16 +138,25 @@ async def stop_download(event):
         await event.reply("Bu kanal için aktif bir işlem yok.")
 
 async def main():
-    print("Telefon numaranızı +90 şeklinde girin:")
-    phone = input("Telefon: ")
-
+    phone = input("Telefon numaranızı +90 şeklinde girin: ")
     await client.connect()
     if not await client.is_user_authorized():
         sent = await client.send_code_request(phone)
-        code = input("Telegram'dan gelen kodu girin: ")
-        await client.sign_in(phone, code, phone_code_hash=sent.phone_code_hash)
+        while True:
+            try:
+                code = input("Telegram'dan gelen kodu girin: ")
+                await client.sign_in(phone, code, phone_code_hash=sent.phone_code_hash)
+                break
+            except errors.PhoneCodeInvalidError:
+                print("Geçersiz kod, lütfen tekrar deneyin.")
+            except errors.SessionPasswordNeededError:
+                password = input("2FA aktif, şifrenizi girin: ")
+                await client.sign_in(password=password)
+                break
+            except Exception as e:
+                print(f"Hata: {e}")
+                return
     print("Giriş başarılı!")
-
     print("Bot hazır. Telegram'da kendinize /indir <mesaj_linki> gönderebilirsiniz.")
     await client.run_until_disconnected()
 
