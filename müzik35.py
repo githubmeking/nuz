@@ -1,36 +1,62 @@
-from telethon import TelegramClient, events
-from telethon.sessions import StringSession
+import os
+import asyncio
+from pyrogram import Client, filters
 from pytgcalls import PyTgCalls
-from pytgcalls.types.input_stream import AudioPiped
+from pytgcalls.types import AudioPiped
+from yt_dlp import YoutubeDL
 
-API_ID = 24302768
-API_HASH = "7082b3b3331e7d12971ea9ef19e2d58b"
-SESSION_STRING = "1BJWap1sBu3T98i3eNod4zzbROmuXIWsdQJgm9wJjS_JwCi0ts2_XXHX-ei3QN0-ePVOkxi1eIhSqwSjeGajn0TTVjr1SgVoxQFc_bag8KBTLm9cWoEanWuohS2tLvMXeCndY3VhGAyA8CH9z2Zqht15d36i9UOEBwxxCEBhEuTIMrCnw-Pjy56Dxl0I8TXjU_BpncaMGOpwN6r36_QydSyV1n-TyTTujK1HnQZg7Y-5JMxF11BXP93MvsSC3zCsHmzyen-dWELV2e6vcTaJpigh4smlT3biQosVJ3ZOJ-svpStg2U1IYahirl7Xnlycw2JJWOUkMw9RJfQfr66f1jUP7sOeHQPg="
+API_ID = 24302768  # kendi api_id
+API_HASH = "7082b3b3331e7d12971ea9ef19e2d58b"  # kendi api_hash
+SESSION_STRING = "1BJWap1sBu3T98i3eNod4zzbROmuXIWsdQJgm9wJjS_JwCi0ts2_XXHX-ei3QN0..."  # kendi session string
 
-client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
-pytg = PyTgCalls(client)
+DOWNLOAD_DIR = "downloads"
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-@client.on(events.NewMessage(pattern='/oynat (.+)'))
-async def oynat(event):
-    chat_id = event.chat_id
-    song_path = "test.mp3"  # test.mp3 dosyası aynı dizinde olmalı!
-    await pytg.join_group_call(
-        chat_id,
-        AudioPiped(song_path)
-    )
-    await event.reply("Şarkı çalınıyor!")
+app = Client(session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH)
+pytg = PyTgCalls(app)
 
-@client.on(events.NewMessage(pattern='/durdur'))
-async def durdur(event):
-    await pytg.leave_group_call(event.chat_id)
-    await event.reply("Çalma durduruldu!")
+@pytg.on_stream_end()
+async def on_stream_end(_, update):
+    # İstersen buraya şarkı bittiğinde yapılacaklar ekleyebilirsin.
+    pass
+
+@app.on_message(filters.command("oynat") & filters.group)
+async def oynat(client, message):
+    if len(message.command) < 2:
+        await message.reply("Lütfen bir şarkı adı veya linki yaz.")
+        return
+
+    arama = " ".join(message.command[1:])
+    status = await message.reply("🎵 Şarkı aranıyor ve indiriliyor...")
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "outtmpl": f"{DOWNLOAD_DIR}/%(title)s.%(ext)s",
+        "quiet": True,
+        "no_warnings": True,
+    }
+
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(arama, download=True)
+        dosya_yolu = ydl.prepare_filename(info)
+
+    await status.edit("🔊 Şarkı sesli sohbette çalınıyor...")
+    chat_id = message.chat.id
+
+    await pytg.join_group_call(chat_id, AudioPiped(dosya_yolu))
+    await status.edit(f"✅ Şarkı çalınıyor: {info.get('title')}")
+
+@app.on_message(filters.command("durdur") & filters.group)
+async def durdur(client, message):
+    chat_id = message.chat.id
+    await pytg.leave_group_call(chat_id)
+    await message.reply("⏹️ Müzik durduruldu.")
 
 async def main():
-    await client.start()
+    await app.start()
     await pytg.start()
-    print("Bot hazır!")
-    await client.run_until_disconnected()
+    print("Bot ve PyTgCalls başladı.")
+    await idle()
 
-import asyncio
 if __name__ == "__main__":
+    from pytgcalls import idle
     asyncio.run(main())
