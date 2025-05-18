@@ -1,19 +1,18 @@
-from telethon import TelegramClient, events
-from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 import os
 import re
 import asyncio
+from telethon import TelegramClient, events
+from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 
 api_id = 20213849
 api_hash = 'e97df0eca2a9531c80202c1a7d3f5721'
 HEDEF_GRUP_LINK = "https://t.me/+q5Ui3I8HNMwxYTM8"
 
-client = TelegramClient('userbot_session', api_id, api_hash)
-
 downloads_dir = 'downloads'
 if not os.path.exists(downloads_dir):
     os.makedirs(downloads_dir)
 
+client = TelegramClient('userbot_session', api_id, api_hash)
 downloading = {}
 progress_last_update = {}
 
@@ -139,8 +138,16 @@ async def stop_download(event):
         await event.reply("Bu kanal için aktif bir işlem yok.")
 
 async def main():
-    print("Telefon numaranız ile giriş yapınız (örn. +90...)")
-    await client.start()
+    print("Telefon numaranızı +90 şeklinde girin:")
+    phone = input("Telefon: ")
+
+    await client.connect()
+    if not await client.is_user_authorized():
+        sent = await client.send_code_request(phone)
+        code = input("Telegram'dan gelen kodu girin: ")
+        await client.sign_in(phone, code, phone_code_hash=sent.phone_code_hash)
+    print("Giriş başarılı!")
+
     print("Bot hazır. Telegram'da kendinize /indir <mesaj_linki> gönderebilirsiniz.")
     await client.run_until_disconnected()
 
