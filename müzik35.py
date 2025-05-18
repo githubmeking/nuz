@@ -1,7 +1,7 @@
 from telethon import TelegramClient, events
 from telethon.sessions import StringSession
 from pytgcalls import PyTgCalls
-from pytgcalls.types.input_stream import InputStream, AudioPiped
+from pytgcalls.types.input_stream import AudioPiped
 
 API_ID = 24302768
 API_HASH = "7082b3b3331e7d12971ea9ef19e2d58b"
@@ -13,12 +13,10 @@ pytg = PyTgCalls(client)
 @client.on(events.NewMessage(pattern='/oynat (.+)'))
 async def oynat(event):
     chat_id = event.chat_id
-    song_path = "test.mp3"  # test.mp3 ile aynı klasörde dosya olmalı
+    song_path = "test.mp3"  # test.mp3 dosyası aynı dizinde olmalı!
     await pytg.join_group_call(
         chat_id,
-        InputStream(
-            AudioPiped(song_path)
-        )
+        AudioPiped(song_path)
     )
     await event.reply("Şarkı çalınıyor!")
 
