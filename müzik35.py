@@ -1,11 +1,10 @@
 from telethon import TelegramClient, events
+from telethon.sessions import StringSession
 from pytgcalls import PyTgCalls
-from pytgcalls.types import Update
-from pytgcalls.types.stream import StreamAudioEnded
 from pytgcalls.types.input_stream import InputStream, AudioPiped
 
-API_ID = 123456  # kendi api id
-API_HASH = "api_hash_buraya"
+API_ID = 24302768
+API_HASH = "7082b3b3331e7d12971ea9ef19e2d58b"
 SESSION_STRING = "1BJWap1sBu3T98i3eNod4zzbROmuXIWsdQJgm9wJjS_JwCi0ts2_XXHX-ei3QN0-ePVOkxi1eIhSqwSjeGajn0TTVjr1SgVoxQFc_bag8KBTLm9cWoEanWuohS2tLvMXeCndY3VhGAyA8CH9z2Zqht15d36i9UOEBwxxCEBhEuTIMrCnw-Pjy56Dxl0I8TXjU_BpncaMGOpwN6r36_QydSyV1n-TyTTujK1HnQZg7Y-5JMxF11BXP93MvsSC3zCsHmzyen-dWELV2e6vcTaJpigh4smlT3biQosVJ3ZOJ-svpStg2U1IYahirl7Xnlycw2JJWOUkMw9RJfQfr66f1jUP7sOeHQPg="
 
 client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
@@ -14,7 +13,7 @@ pytg = PyTgCalls(client)
 @client.on(events.NewMessage(pattern='/oynat (.+)'))
 async def oynat(event):
     chat_id = event.chat_id
-    song_path = "test.mp3"  # Buraya oynatılacak dosyanın yolunu yaz
+    song_path = "test.mp3"  # Burada mp3 dosyasının adını gir (örn. 'muzik.mp3')
     await pytg.join_group_call(
         chat_id,
         InputStream(
