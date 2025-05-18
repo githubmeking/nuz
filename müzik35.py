@@ -7,7 +7,7 @@ import os
 
 API_ID = 123456  # API ID (my.telegram.org)
 API_HASH = "abcdef1234567890abcdef1234567890"  # API Hash (my.telegram.org)
-SESSION_STRING = ""  # Userbot string session (telethon/pyrogramdan oluştur)
+SESSION_STRING = "1BJWap1sBu6j8lRL81uy0gXrZstXa4Iey2JGcu7R4UTNYMAPysVUOlnZj8lzNfqDV0dvk4XIBsvjKmSRBNQBneewkZewFtS2GrDn7lEqzMNERcX2ifCt7NQKHRFGEUMnAvTykgOyE4k88QXiI5bzWkOS5zuEba2ULZkwgxRw3-YROrTEloWoluqpJ48VavgfvehlPyrVCMuoOAT6EYr7rp6JN7zWWjo11voDd8sqini9nkFtQh_mmgT_vqHGV_Ge78NwBTXq35EAiGSEhnA7u9GvSn1V-V-BN_yrUwCHbVm5gXo_GTi3ZgGrIs-JUva6q6dl2amhHRyfuBC96H_iOXwr3hr2AKzs="  # Userbot string session (telethon/pyrogramdan oluştur)
 
 DOWNLOAD_DIR = "downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
