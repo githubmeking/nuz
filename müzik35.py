@@ -13,13 +13,12 @@ pytg = PyTgCalls(client)
 @client.on(events.NewMessage(pattern='/oynat (.+)'))
 async def oynat(event):
     chat_id = event.chat_id
-    song_path = "test.mp3"  # Burada mp3 dosyasının adını gir (örn. 'muzik.mp3')
+    song_path = "test.mp3"  # test.mp3 ile aynı klasörde dosya olmalı
     await pytg.join_group_call(
         chat_id,
         InputStream(
             AudioPiped(song_path)
-        ),
-        stream_type="local"
+        )
     )
     await event.reply("Şarkı çalınıyor!")
 
