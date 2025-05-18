@@ -10,7 +10,7 @@ from yt_dlp import YoutubeDL
 
 API_ID = 1234567  # BURAYA api_id
 API_HASH = "api_hash_buraya"
-SESSION_STRING = "string_session_buraya"
+SESSION_STRING = "BAGa5YYAnBEYEjNFsWaE3eVlqtpVlSt0qE0OyFxqrV507d-fNuQgWzMfwMx8AQfMYCVp2l9DO6hQdvonly0PgvlSFIVdYOBLKeQPhAoY7mOgZT4JK-IDkJOm58rHrRV4XtUsbv5Km_iiQ683vvPGJZUKfrqVxVgTqMNenQ-bieTU71aacKEVM6VpGCcRxmYONxHZ-QX5BN6J6Eebo_AfIjThJxl96dyIPXyMieu5WmoMAcgW23lOjo5pNTIICtVvmdFhNdd5X5Kp0m_3hIwqJMwC1gm1DzXR9mDWZJij1GpNpQA8MpENCuOSTlsLACZjwtyUSLHc19vmvE1U_Bp0k8BftCXcqwAAAAHCpqMoAA"
 
 DOWNLOAD_DIR = "downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
